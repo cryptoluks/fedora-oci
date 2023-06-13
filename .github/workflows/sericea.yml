@@ -1,0 +1,66 @@
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - .github/workflows/packages.yml
+    types:
+      - completed
+  push:
+    paths:
+      - sericea/**
+
+env:
+  REGISTRY: ghcr.io
+  REPO: ${{ github.repository }}
+  
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  sericea:
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    env:
+      IMAGE: sericea
+      IMAGE_TAG: latest
+      IMAGE_FROM: sericea
+      IMAGE_FROM_TAG: upstream
+      IMAGE_PACKAGES: packages
+      IMAGE_PACKAGES_TAG: latest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to ${{ env.REGISTRY }} as ${{ github.actor }}
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Set SRC, DST and PKGS_SRC env vars
+      run: |
+        echo "SRC=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_FROM }}:${{ env.IMAGE_FROM_TAG }}" >> $GITHUB_ENV
+        echo "DST=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+        echo "PKGS_SRC=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_PACKAGES }}:${{ env.IMAGE_PACKAGES_TAG }}" >> $GITHUB_ENV
+    - name: Clone repository
+      uses: actions/checkout@v3
+    - name: Set up docker buildx
+      uses: docker/setup-buildx-action@v2
+    - name: Build from ${{ env.SRC }} and push the image to ${{ env.DST }}
+      uses: docker/build-push-action@v4
+      with:
+        context: sericea
+        push: true
+        tags: ${{ env.DST }}
+        build-args: |
+          SRC=${{ env.SRC }}
+          PKGS_SRC=${{ env.PKGS_SRC }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
+    - name: Get kernel version, commit and push it to the repository
+      run: |
+        docker run --rm ${{ env.DST }} sh -c "rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}'" > ${{ github.workspace }}/buildroot/kernel-version-latest.txt
+        git config user.email "<>"
+        git config user.name "GitHub Action"
+        git pull --rebase
+        git add ${{ github.workspace }}/buildroot/kernel-version-latest.txt
+        git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea latest" && git push)
+      

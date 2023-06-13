@@ -1,0 +1,50 @@
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - .github/workflows/buildroot.yml
+    types:
+      - completed
+
+env:
+  REGISTRY: ghcr.io
+  REPO: ${{ github.repository }}
+  
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  packages:
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+    env:
+      IMAGE: packages
+      IMAGE_TAG: latest
+      IMAGE_FROM: buildroot
+      IMAGE_FROM_TAG: latest
+    runs-on: ubuntu-latest
+    steps:
+    - name: Login to ${{ env.REGISTRY }} as ${{ github.actor }}
+      uses: docker/login-action@v2
+      with:
+        registry: ${{ env.REGISTRY }}
+        username: ${{ github.actor }}
+        password: ${{ secrets.GITHUB_TOKEN }}
+    - name: Set SRC and DST env vars
+      run: |
+        echo "SRC=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_FROM }}:${{ env.IMAGE_FROM_TAG }}" >> $GITHUB_ENV
+        echo "DST=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+    - name: Clone repository
+      uses: actions/checkout@v3
+    - name: Set up docker buildx
+      uses: docker/setup-buildx-action@v2
+    - name: Build from ${{ env.SRC }} and push the image to ${{ env.DST }}
+      uses: docker/build-push-action@v4
+      with:
+        context: packages
+        push: true
+        tags: ${{ env.DST }}
+        build-args: |
+          SRC=${{ env.SRC }}
+        cache-from: type=gha
+        cache-to: type=gha,mode=max
