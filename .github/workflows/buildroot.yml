@@ -35,7 +35,6 @@ jobs:
           echo "rebuild=yes" | tee -a "$GITHUB_OUTPUT"
         else
           echo "rebuild=no" | tee -a "$GITHUB_OUTPUT"
-          exit 1
         fi
   buildroot:
     needs: check-kernel 

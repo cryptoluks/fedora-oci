@@ -18,8 +18,26 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  check-kernel:
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild: ${{ steps.kernel-diff.outputs.rebuild }}
+    steps:
+    - name: Clone repository
+      uses: actions/checkout@v3
+    - name: Diff kernel versions to check if buildroot needs to be rebuilded
+      id: kernel-diff
+      run: |
+        cd buildroot
+        if [[ "${{ github.event_name }}" == 'workflow_dispatch' ]] || ! diff kernel-version-upstream.txt kernel-version-latest.txt; then
+          echo "rebuild=yes" | tee -a "$GITHUB_OUTPUT"
+        else
+          echo "rebuild=no" | tee -a "$GITHUB_OUTPUT"
+        fi
   sericea:
-    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    needs: check-kernel 
+    if: needs.check-kernel.outputs.rebuild == 'yes' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
     env:
       IMAGE: sericea
       IMAGE_TAG: latest
