@@ -64,7 +64,6 @@ RUN rpm-ostree install \
   arc-theme \
   bat \
   binutils \
-  borgbackup \
   borgmatic \
   btop \
   celluloid \
@@ -110,7 +109,6 @@ RUN rpm-ostree install \
   vagrant \
   virt-manager \
   vlc \
-  vorta \
   wireguard-tools \
   wl-clipboard \
   xarchiver \
