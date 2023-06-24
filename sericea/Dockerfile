@@ -4,9 +4,6 @@ ARG SRC
 FROM "${PKGS_SRC}" as packages
 FROM "${SRC}"
 
-# rpms which install files to /opt are not directly supported and will fail during rpm-ostree installation
-# google-chrome, onlyoffice-desktop, sublime-merge, sublime-text
-
 # virtualbox kernel modules and additions
 COPY --from=packages /rpms /tmp/rpms
 COPY build.sh /build.sh
