@@ -42,3 +42,4 @@ EOF
 grep -E '^vboxusers:' /usr/lib/group | tee -a /etc/group
 grep -E '^docker:' /usr/lib/group | tee -a /etc/group
 grep -E '^input:' /usr/lib/group | tee -a /etc/group
+grep -E '^dialout:' /usr/lib/group | tee -a /etc/group

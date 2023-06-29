@@ -120,3 +120,6 @@ RUN rpm-ostree install \
 COPY post.sh /post.sh
 RUN chmod +x /post.sh && /post.sh \
   && ostree container commit
+
+# Add firefox policies.json to add default addons/settings
+COPY post/policies.json /etc/firefox/policies/policies.json
