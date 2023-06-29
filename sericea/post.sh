@@ -28,12 +28,12 @@ grep -vE "^(root|wheel):" /etc/group >> /usr/lib/group
 grep -v "^root:" /etc/passwd >> /usr/lib/passwd
 
 # Restore default users
-tee /etc/passwd <<"EOF"
+tee /etc/passwd << "EOF"
 root:x:0:0:root:/root:/bin/bash
 EOF
 
 # Restore default groups
-tee /etc/group <<"EOF"
+tee /etc/group << "EOF"
 root:x:0:
 wheel:x:10:
 EOF
