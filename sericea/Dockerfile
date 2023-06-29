@@ -87,6 +87,7 @@ RUN rpm-ostree install \
   mozilla-openh264 \
   neovim \
   net-tools \
+  NetworkManager-tui \
   nmap \
   openh264 \
   pipenv \
