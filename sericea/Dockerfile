@@ -53,6 +53,12 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   && rpm-ostree install packer terraform \
   && ostree container commit
 
+# teams for linux
+RUN wget --progress=bar:force:noscroll https://repo.teamsforlinux.de/rpm/teams-for-linux.repo -O /etc/yum.repos.d/teams-for-linux.repo \
+  && echo 'gpgkey=https://repo.teamsforlinux.de/teams-for-linux.asc' | tee -a /etc/yum.repos.d/teams-for-linux.repo \
+  && rpm-ostree install teams-for-linux \
+  && ostree container commit
+
 # other packages
 RUN rpm-ostree install \
   android-tools \
