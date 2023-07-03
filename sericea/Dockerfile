@@ -53,10 +53,23 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   && rpm-ostree install packer terraform \
   && ostree container commit
 
+# google chrome
+RUN echo -e "[google-chrome]\nname=google-chrome\nbaseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64\nskip_if_unavailable=True\ngpgcheck=1\ngpgkey=https://dl.google.com/linux/linux_signing_key.pub\nenabled=1" /etc/yum.repos.d/google-chrome.repo \
+  && mkdir /var/opt \
+  && rpm-ostree install google-chrome-stable \
+  && mv /var/opt/google /usr/lib/ \
+  && echo 'L /opt/google - - - - ../../usr/lib/google' > /usr/lib/tmpfiles.d/google.conf \
+  && rmdir /var/opt \
+  && ostree container commit
+
 # teams for linux
 RUN wget --progress=bar:force:noscroll https://repo.teamsforlinux.de/rpm/teams-for-linux.repo -O /etc/yum.repos.d/teams-for-linux.repo \
   && echo 'gpgkey=https://repo.teamsforlinux.de/teams-for-linux.asc' | tee -a /etc/yum.repos.d/teams-for-linux.repo \
+  && mkdir /var/opt \
   && rpm-ostree install teams-for-linux \
+  && mv /var/opt/teams-for-linux /usr/lib/ \
+  && echo 'L /opt/teams-for-linux - - - - ../../usr/lib/teams-for-linux' > /usr/lib/tmpfiles.d/teams-for-linux.conf \
+  && rmdir /var/opt \
   && ostree container commit
 
 # other packages
