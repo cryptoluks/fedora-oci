@@ -53,6 +53,11 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   && rpm-ostree install packer terraform \
   && ostree container commit
 
+# try to reimport google signing key
+RUN wget --progress=bar:force:noscroll https://dl.google.com/linux/linux_signing_key.pub \
+  && rpm --import linux_signing_key.pub \
+  && rm linux_signing_key.pub
+
 # google chrome
 RUN echo -e "[google-chrome]\nname=google-chrome\nbaseurl=https://dl.google.com/linux/chrome/rpm/stable/x86_64\nskip_if_unavailable=True\ngpgcheck=1\ngpgkey=https://dl.google.com/linux/linux_signing_key.pub\nenabled=1" > /etc/yum.repos.d/google-chrome.repo \
   && mkdir /var/opt \
