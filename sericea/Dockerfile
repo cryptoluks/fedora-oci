@@ -61,7 +61,7 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   rpm-ostree install packer terraform && \
   ostree container commit
 
-# google-chrome-stable
+# chrome
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/google-chrome.repo && \
   rpm --import https://dl.google.com/linux/linux_signing_key.pub && \
   mkdir /var/opt && \
