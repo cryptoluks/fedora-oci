@@ -63,7 +63,7 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   ostree container commit
 
 # try to reimport google signing key
-RUN wget --progress=bar:force:noscroll https://dl.google.com/linux/linux_signing_key.pub && \
+RUN wget --progress=bar:force:noscroll https://dl.google.com/linux/linux_signing_key.pub
 #  rpm --import linux_signing_key.pub && \
 #  rm linux_signing_key.pub
 
