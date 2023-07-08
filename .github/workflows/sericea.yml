@@ -78,7 +78,6 @@ jobs:
         docker run --rm ${{ env.DST }} sh -c "rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}'" > ${{ github.workspace }}/buildroot/kernel-version-latest.txt
         git config user.email "<>"
         git config user.name "GitHub Action"
-        git pull --rebase
         git add ${{ github.workspace }}/buildroot/kernel-version-latest.txt
-        git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea latest" && git push)
+        git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea latest" && git pull --rebase && git push)
       
