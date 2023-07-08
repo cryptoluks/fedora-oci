@@ -32,8 +32,8 @@ RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/e
   ostree container commit
 
 # vscode
-RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
-  wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
+#RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
+RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
   rpm-ostree install code && \
   ostree container commit
 
@@ -49,7 +49,7 @@ RUN wget --progress=bar:force:noscroll https://download.opensuse.org/repositorie
 
 # tailscale
 RUN wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/tailscale.repo -O /etc/yum.repos.d/tailscale.repo && \
-  rpm-ostree install tailscale \
+  rpm-ostree install tailscale && \
   ostree container commit
 
 # docker
