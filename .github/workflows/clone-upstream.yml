@@ -77,6 +77,5 @@ jobs:
         docker run --rm ${{ env.DST }} sh -c "rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}'" > ${{ github.workspace }}/buildroot/kernel-version-upstream.txt
         git config user.email "<>"
         git config user.name "GitHub Action"
-        git pull --rebase
         git add ${{ github.workspace }}/buildroot/kernel-version-upstream.txt
-        git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea upstream" && git push)
+        git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea upstream" && git pull --rebase && git push)
