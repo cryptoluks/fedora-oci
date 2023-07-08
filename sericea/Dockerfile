@@ -23,12 +23,14 @@ RUN rpm-ostree override remove \
   ostree container commit
 
 # edge
-RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo && \
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
+  wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo && \
   rpm-ostree install microsoft-edge-stable && \
   ostree container commit
 
 # vscode
-RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc && \
+  wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
   rpm-ostree install code && \
   ostree container commit
 
