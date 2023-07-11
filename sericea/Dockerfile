@@ -22,6 +22,15 @@ RUN rpm-ostree override remove \
   --install ffmpeg && \
   ostree container commit
 
+# terraform, packer, vagrant
+RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora/hashicorp.repo -O /etc/yum.repos.d/hashicorp.repo && \
+  mkdir /var/opt && \
+  rpm-ostree install packer terraform vagrant && \
+  mv /var/opt/vagrant /usr/lib/ && \
+  echo 'L /opt/vagrant - - - - ../../usr/lib/vagrant' > /usr/lib/tmpfiles.d/vagrant.conf && \
+  rmdir /var/opt && \
+  ostree container commit
+
 # edge
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo && \
   mkdir /var/opt && \
@@ -54,12 +63,6 @@ RUN wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/
 # docker
 RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/fedora/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo && \
   rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
-
-# terraform, packer
-RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora/hashicorp.repo -O /etc/yum.repos.d/hashicorp.repo && \
-  sed -i -e '/^\[hashicorp\]/,/^\[/ s/^\(name=.*\)$/\1\npriority=100/' -e '/^\[hashicorp-test\]/,/^\[/ s/^\(name=.*\)$/\1\npriority=100/' /etc/yum.repos.d/hashicorp.repo && \
-  rpm-ostree install packer terraform && \
-  ostree container commit
 
 # chrome
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/google-chrome.repo && \
@@ -122,7 +125,6 @@ RUN rpm-ostree install \
   thunderbird \
   tmux \
   usbmuxd \
-  vagrant \
   virt-manager \
   vlc \
   wireguard-tools \
