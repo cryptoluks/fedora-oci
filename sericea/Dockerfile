@@ -11,16 +11,16 @@ RUN chmod +x /build.sh && /build.sh && \
   ostree container commit
 
 # ffmpeg
-RUN rpm-ostree override remove \
-  libavcodec-free \
-  libavfilter-free \
-  libavformat-free \
-  libavutil-free \
-  libpostproc-free \
-  libswresample-free \
-  libswscale-free \
-  --install ffmpeg && \
-  ostree container commit
+#RUN rpm-ostree override remove \
+#  libavcodec-free \
+#  libavfilter-free \
+#  libavformat-free \
+#  libavutil-free \
+#  libpostproc-free \
+#  libswresample-free \
+#  libswscale-free \
+#  --install ffmpeg && \
+#  ostree container commit
 
 # terraform, packer, vagrant
 RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora/hashicorp.repo -O /etc/yum.repos.d/hashicorp.repo && \
@@ -62,7 +62,7 @@ RUN wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/
 
 # docker
 RUN wget --progress=bar:force:noscroll https://download.docker.com/linux/fedora/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo && \
-  rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+  rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
 
 # chrome
 RUN sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/google-chrome.repo && \
