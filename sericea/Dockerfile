@@ -87,6 +87,7 @@ RUN rpm-ostree install \
   celluloid \
   chromium \
   dconf-editor \
+  direnv \
   distrobox \
   exa \
   fd-find \
@@ -122,6 +123,7 @@ RUN rpm-ostree install \
   socat \
   speedcrunch \
   sysstat \
+  thefuck \
   thunderbird \
   tmux \
   usbmuxd \
