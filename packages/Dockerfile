@@ -7,9 +7,12 @@ ARG AKMODSDIR=/var/cache/akmods
 ARG BUILDDIR=/build
 
 COPY build "${BUILDDIR}"
-RUN chmod +x "${BUILDDIR}"/build.sh && cd "${BUILDDIR}" && ./build.sh && \
-    mkdir -p "${RPMDIR}" && find "${AKMODSDIR}" "${BUILDDIR}" -type f -name '*.x86_64.rpm' -exec cp {} "${RPMDIR}" \; && \
+RUN <<-EOF
+    set -eux
+    chmod +x "${BUILDDIR}"/build.sh && cd "${BUILDDIR}" && ./build.sh
+    mkdir -p "${RPMDIR}" && find "${AKMODSDIR}" "${BUILDDIR}" -type f -name '*.x86_64.rpm' -exec cp {} "${RPMDIR}" \;
     find "${RPMDIR}"
+EOF
 
 FROM scratch
 
