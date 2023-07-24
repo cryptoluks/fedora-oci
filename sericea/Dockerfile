@@ -19,13 +19,10 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   rmdir /var/opt && \
   ostree container commit
 
-# microsoft rpm key
-RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
-
-# edge
+# edge, pin version as most recent stable has invalid signature
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo && \
   mkdir /var/opt && \
-  rpm-ostree install microsoft-edge-stable && \
+  rpm-ostree install microsoft-edge-stable-114.0.1823.82 && \
   mv /var/opt/microsoft /usr/lib/ && \
   echo 'L /opt/microsoft - - - - ../../usr/lib/microsoft' > /usr/lib/tmpfiles.d/microsoft.conf && \
   rmdir /var/opt && \
