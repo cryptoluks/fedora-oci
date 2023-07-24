@@ -28,7 +28,7 @@ RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/e
   rmdir /var/opt && \
   ostree container commit
 
-# vscode, pin version
+# vscode, pin version as with edge
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
   rpm-ostree install code-1.80.0 && \
   ostree container commit
@@ -77,6 +77,7 @@ RUN rpm-ostree install \
   dconf-editor \
   direnv \
   distrobox \
+  eog \
   exa \
   fd-find \
   firefox \
