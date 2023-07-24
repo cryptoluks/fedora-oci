@@ -1,8 +1,8 @@
 ARG PKGS_SRC
 ARG SRC
 
-FROM "${PKGS_SRC}" as packages
-FROM "${SRC}"
+FROM "$PKGS_SRC" as packages
+FROM "$SRC"
 
 # virtualbox kernel modules and additions
 COPY --from=packages /rpms /tmp/rpms
