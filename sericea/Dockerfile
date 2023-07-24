@@ -28,9 +28,9 @@ RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/e
   rmdir /var/opt && \
   ostree container commit
 
-# vscode
+# vscode, pin version
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
-  rpm-ostree install code && \
+  rpm-ostree install code-1.80.0 && \
   ostree container commit
 
 # nwg-shell
