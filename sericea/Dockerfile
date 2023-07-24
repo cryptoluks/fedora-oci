@@ -12,7 +12,6 @@ RUN chmod +x /build.sh && /build.sh && ostree container commit
 
 # terraform, packer, vagrant
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora/hashicorp.repo -O /etc/yum.repos.d/hashicorp.repo
     mkdir /var/opt
     rpm-ostree install packer terraform vagrant
@@ -24,7 +23,6 @@ EOF
 
 # edge, pin version as most recent stable has invalid signature
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo
     mkdir /var/opt
     rpm-ostree install microsoft-edge-stable-114.0.1823.82
@@ -36,7 +34,6 @@ EOF
 
 # vscode, pin version as with edge
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo
     rpm-ostree install code-1.80.0
     ostree container commit
@@ -44,7 +41,6 @@ EOF
 
 # nwg-shell
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/tofik/nwg-shell/repo/fedora-38/tofik-nwg-shell-fedora-38.repo -O /etc/yum.repos.d/nwg-shell.repo
     rpm-ostree install nwg-shell
     ostree container commit
@@ -52,7 +48,6 @@ EOF
 
 # element
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://download.opensuse.org/repositories/home:jejb1:Element/Fedora_38/home:jejb1:Element.repo -O /etc/yum.repos.d/element.repo
     rpm-ostree install element-desktop
     ostree container commit
@@ -60,7 +55,6 @@ EOF
 
 # tailscale
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/tailscale.repo -O /etc/yum.repos.d/tailscale.repo
     rpm-ostree install tailscale
     ostree container commit
@@ -68,14 +62,12 @@ EOF
 
 # docker
 RUN <<-EOF
-    set -eux
     wget --progress=bar:force:noscroll https://download.docker.com/linux/fedora/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo
     rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
 EOF
 
 # chrome
 RUN <<-EOF
-    set -eux
     sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/google-chrome.repo
     rpm --import https://dl.google.com/linux/linux_signing_key.pub
     mkdir /var/opt
@@ -88,7 +80,6 @@ EOF
 
 # other packages
 RUN <<-EOF
-    set -eux
     rpm-ostree install \
         android-tools \
         ansible \
