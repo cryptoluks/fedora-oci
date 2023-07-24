@@ -33,6 +33,7 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
 
 # edge
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo && \
+  rpm --import https://packages.microsoft.com:443/yumrepos/edge/repodata/repomd.xml.key && \
   mkdir /var/opt && \
   rpm-ostree install microsoft-edge-stable && \
   mv /var/opt/microsoft /usr/lib/ && \
@@ -42,6 +43,7 @@ RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/e
 
 # vscode
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
+  #rpm --import https://packages.microsoft.com:443/yumrepos/vscode/repodata/repomd.xml.key && \
   rpm-ostree install code && \
   ostree container commit
 
