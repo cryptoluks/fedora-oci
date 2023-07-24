@@ -3,6 +3,7 @@ ARG SRC
 
 FROM "$PKGS_SRC" as packages
 FROM "$SRC"
+SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 
 # virtualbox kernel modules and additions
 COPY --from=packages /rpms /tmp/rpms
@@ -89,68 +90,68 @@ EOF
 RUN <<-EOF
     set -eux
     rpm-ostree install \
-    android-tools \
-    ansible \
-    arc-kde \
-    arc-theme \
-    bat \
-    binutils \
-    borgmatic \
-    btop \
-    celluloid \
-    chromium \
-    dconf-editor \
-    direnv \
-    distrobox \
-    eog \
-    exa \
-    fd-find \
-    firefox \
-    fish \
-    flatpak-builder \
-    fuse-sshfs \
-    fzf \
-    gnome-boxes \
-    gstreamer1-plugin-openh264 \
-    hadolint \
-    htop \
-    intel-media-driver \
-    just \
-    keepassxc \
-    libimobiledevice-utils \
-    libusbmuxd-utils \
-    lm_sensors \
-    mosh \
-    mozilla-openh264 \
-    neovim \
-    net-tools \
-    NetworkManager-tui \
-    nmap \
-    openh264 \
-    pipenv \
-    poetry \
-    proxychains-ng \
-    python3-pip \
-    qt5ct \	
-    rclone \
-    ripgrep \
-    smartmontools \
-    socat \
-    speedcrunch \
-    sysstat \
-    thefuck \
-    thunderbird \
-    tmux \
-    usbmuxd \
-    virt-manager \
-    vlc \
-    wireguard-tools \
-    wl-clipboard \
-    xarchiver \
-    ydotool \
-    zoxide \
-    zsh \
-    zstd
+        android-tools \
+        ansible \
+        arc-kde \
+        arc-theme \
+        bat \
+        binutils \
+        borgmatic \
+        btop \
+        celluloid \
+        chromium \
+        dconf-editor \
+        direnv \
+        distrobox \
+        eog \
+        exa \
+        fd-find \
+        firefox \
+        fish \
+        flatpak-builder \
+        fuse-sshfs \
+        fzf \
+        gnome-boxes \
+        gstreamer1-plugin-openh264 \
+        hadolint \
+        htop \
+        intel-media-driver \
+        just \
+        keepassxc \
+        libimobiledevice-utils \
+        libusbmuxd-utils \
+        lm_sensors \
+        mosh \
+        mozilla-openh264 \
+        neovim \
+        net-tools \
+        NetworkManager-tui \
+        nmap \
+        openh264 \
+        pipenv \
+        poetry \
+        proxychains-ng \
+        python3-pip \
+        qt5ct \
+        rclone \
+        ripgrep \
+        smartmontools \
+        socat \
+        speedcrunch \
+        sysstat \
+        thefuck \
+        thunderbird \
+        tmux \
+        usbmuxd \
+        virt-manager \
+        vlc \
+        wireguard-tools \
+        wl-clipboard \
+        xarchiver \
+        ydotool \
+        zoxide \
+        zsh \
+        zstd
     rm -rf /var/*
     ostree container commit
 EOF
@@ -160,3 +161,5 @@ RUN chmod +x /post.sh && /post.sh && ostree container commit
 
 # Add firefox policies.json to add default addons/settings
 COPY post/policies.json /etc/firefox/policies/policies.json
+
+SHELL ["/bin/sh", "-c"]
