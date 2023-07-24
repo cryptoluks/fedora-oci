@@ -10,18 +10,6 @@ COPY build.sh /build.sh
 RUN chmod +x /build.sh && /build.sh && \
   ostree container commit
 
-# ffmpeg
-#RUN rpm-ostree override remove \
-#  libavcodec-free \
-#  libavfilter-free \
-#  libavformat-free \
-#  libavutil-free \
-#  libpostproc-free \
-#  libswresample-free \
-#  libswscale-free \
-#  --install ffmpeg && \
-#  ostree container commit
-
 # terraform, packer, vagrant
 RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora/hashicorp.repo -O /etc/yum.repos.d/hashicorp.repo && \
   mkdir /var/opt && \
@@ -31,9 +19,11 @@ RUN wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora
   rmdir /var/opt && \
   ostree container commit
 
+# microsoft rpm key
+RUN rpm --import https://packages.microsoft.com/keys/microsoft.asc
+
 # edge
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo && \
-  rpm --import https://packages.microsoft.com:443/yumrepos/edge/repodata/repomd.xml.key && \
   mkdir /var/opt && \
   rpm-ostree install microsoft-edge-stable && \
   mv /var/opt/microsoft /usr/lib/ && \
@@ -43,7 +33,6 @@ RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/e
 
 # vscode
 RUN wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo && \
-  #rpm --import https://packages.microsoft.com:443/yumrepos/vscode/repodata/repomd.xml.key && \
   rpm-ostree install code && \
   ostree container commit
 
