@@ -3,6 +3,7 @@ ARG SRC
 
 FROM "$PKGS_SRC" as packages
 FROM "$SRC"
+
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 
 # virtualbox kernel modules and additions
@@ -32,7 +33,7 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# vscode, pin version as with edge
+# vscode, pin version as most recent stable has invalid signature
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo
     rpm-ostree install code-1.80.0

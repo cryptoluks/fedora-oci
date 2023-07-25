@@ -1,16 +1,15 @@
 #!/usr/bin/env sh
 
-set -oeux pipefail
+set -euxo pipefail
 
-VERSION_FILE="/kernel-version.txt"
-KERNEL_VERSION=$(cat ${VERSION_FILE})
+KERNEL_VERSION=$(cat /kernel-version.txt)
 
 dnf -y install \
     fedora-repos-archive
 
 dnf -y install \
-    kernel-${KERNEL_VERSION} \
-    kernel-devel-${KERNEL_VERSION}
+    kernel-$KERNEL_VERSION \
+    kernel-devel-$KERNEL_VERSION
 
 dnf -y install \
     akmods \

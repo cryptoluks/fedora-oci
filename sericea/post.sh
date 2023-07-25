@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -oeux pipefail
+set -euxo pipefail
 
 # Enable sysrq
 echo 'kernel.sysrq = 1' > /usr/lib/sysctl.d/90-sysrq.conf

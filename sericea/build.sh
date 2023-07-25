@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-set -oeux pipefail
+set -euxo pipefail
 
 rpm-ostree install \
     /tmp/rpms/rpmfusion-*.rpm
