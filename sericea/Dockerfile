@@ -92,6 +92,7 @@ RUN <<-EOF
         btop \
         celluloid \
         chromium \
+        clipman \
         dconf-editor \
         direnv \
         distrobox \
