@@ -97,6 +97,7 @@ RUN <<-EOF
         direnv \
         distrobox \
         eog \
+        evince \
         exa \
         fd-find \
         firefox \
