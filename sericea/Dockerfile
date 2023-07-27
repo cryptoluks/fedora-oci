@@ -22,21 +22,21 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# edge, pin version as most recent stable has invalid signature
+# edge
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo
     mkdir /var/opt
-    rpm-ostree install microsoft-edge-stable-114.0.1823.82
+    rpm-ostree install microsoft-edge-stable
     mv /var/opt/microsoft /usr/lib/
     echo 'L /opt/microsoft - - - - ../../usr/lib/microsoft' > /usr/lib/tmpfiles.d/microsoft.conf
     rmdir /var/opt
     ostree container commit
 EOF
 
-# vscode, pin version as most recent stable has invalid signature
+# vscode
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo
-    rpm-ostree install code-1.80.0
+    rpm-ostree install code
     ostree container commit
 EOF
 
