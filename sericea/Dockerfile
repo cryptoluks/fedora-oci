@@ -141,6 +141,7 @@ RUN <<-EOF
         thefuck \
         thunderbird \
         tmux \
+        tldr \
         usbmuxd \
         virt-manager \
         vlc \
