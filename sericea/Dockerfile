@@ -15,10 +15,7 @@ RUN chmod +x /build.sh && /build.sh && ostree container commit
 RUN <<-EOF
     mkdir -p /usr/local/bin
     curl -s https://api.github.com/repos/knqyf263/pet/releases/latest | \
-        jq -r '.assets[] | \
-        select(.name | \
-        test("linux_amd64.tar.gz")) | \
-        .browser_download_url' | \
+        jq -r '.assets[] | select(.name | test("linux_amd64.tar.gz")) | .browser_download_url' | \
         xargs -I {} curl -sS -L {} | \
         tar xz -O pet > /tmp/pet 
     mv /tmp/pet /usr/local/bin/ && chmod +x /usr/local/bin/pet
