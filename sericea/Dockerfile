@@ -11,6 +11,13 @@ COPY --from=packages /rpms /tmp/rpms
 COPY build.sh /build.sh
 RUN chmod +x /build.sh && /build.sh && ostree container commit
 
+# install charm repo for glow
+RUN <<-EOF
+    echo -e '[charm]\nname=Charm\nbaseurl=https://repo.charm.sh/yum/\nenabled=1\ngpgcheck=1\ngpgkey=https://repo.charm.sh/yum/gpg.key' > /etc/yum.repos.d/charm.repo
+    rpm-ostree install glow
+    ostree container commit
+EOF
+
 # install pet
 RUN curl -s https://api.github.com/repos/knqyf263/pet/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64.tar.gz")) | .browser_download_url' | xargs -I {} curl -sS -L {} | tar xz -O pet > /tmp/pet && mv /tmp/pet /usr/bin/ && chmod +x /usr/bin/pet
 
