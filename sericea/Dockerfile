@@ -115,6 +115,7 @@ RUN <<-EOF
         flatpak-builder \
         fuse-sshfs \
         fzf \
+        glab \
         gnome-boxes \
         gstreamer1-plugin-openh264 \
         hadolint \
