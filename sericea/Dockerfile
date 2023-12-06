@@ -50,16 +50,23 @@ RUN <<-EOF
     ostree container commit
 EOF
 
+# swayr
+RUN <<-EOF
+    wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/alebastr/swayr/repo/fedora-39/alebastr-swayr-fedora-39.repo -O /etc/yum.repos.d/swayr.repo
+    rpm-ostree install swayr
+    ostree container commit
+EOF
+
 # nwg-shell
 RUN <<-EOF
-    wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/tofik/nwg-shell/repo/fedora-38/tofik-nwg-shell-fedora-38.repo -O /etc/yum.repos.d/nwg-shell.repo
+    wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/tofik/nwg-shell/repo/fedora-39/tofik-nwg-shell-fedora-39.repo -O /etc/yum.repos.d/nwg-shell.repo
     rpm-ostree install nwg-shell
     ostree container commit
 EOF
 
 # element
 RUN <<-EOF
-    wget --progress=bar:force:noscroll https://download.opensuse.org/repositories/home:jejb1:Element/Fedora_38/home:jejb1:Element.repo -O /etc/yum.repos.d/element.repo
+    wget --progress=bar:force:noscroll https://download.opensuse.org/repositories/home:jejb1:Element/Fedora_39/home:jejb1:Element.repo -O /etc/yum.repos.d/element.repo
     rpm-ostree install element-desktop
     ostree container commit
 EOF

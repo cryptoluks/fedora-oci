@@ -23,4 +23,4 @@ if [ ! -f "$EXT_PACK" ]; then
 fi
 
 sed -i "s/_VERSION_/$VERSION/" vbox-extensions-pack.spec
-fedpkg --release f38 local
+fedpkg --release f39 local
