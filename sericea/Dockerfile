@@ -112,7 +112,7 @@ RUN <<-EOF
         distrobox \
         eog \
         evince \
-        exa \
+        eza \
         fd-find \
         firefox \
         fish \
