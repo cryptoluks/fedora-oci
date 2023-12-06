@@ -68,21 +68,14 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# Element
-RUN <<-EOF
-    wget --progress=bar:force:noscroll https://download.opensuse.org/repositories/home:jejb1:Element/Fedora_39/home:jejb1:Element.repo -O /etc/yum.repos.d/element.repo
-    rpm-ostree install element-desktop
-    ostree container commit
-EOF
-
 # Tailscale
-RUN <<-EOF
-    wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/tailscale.repo -O /etc/yum.repos.d/tailscale.repo
-    rpm-ostree install tailscale
-    ostree container commit
-EOF
+#RUN <<-EOF
+#    wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/tailscale.repo -O /etc/yum.repos.d/tailscale.repo
+#    rpm-ostree install tailscale
+#    ostree container commit
+#EOF
 
-# docker
+# Docker
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://download.docker.com/linux/fedora/docker-ce.repo -O /etc/yum.repos.d/docker-ce.repo
     rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
