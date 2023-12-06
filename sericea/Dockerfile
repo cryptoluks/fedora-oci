@@ -6,22 +6,22 @@ FROM "$SRC"
 
 SHELL ["/bin/bash", "-euxo", "pipefail", "-c"]
 
-# virtualbox kernel modules and additions
+# VirtualBox kernel modules and guest additions
 COPY --from=packages /rpms /tmp/rpms
 COPY build.sh /build.sh
 RUN chmod +x /build.sh && /build.sh && ostree container commit
 
-# install charm repo for glow
+# Glow - render markdown on the CLI
 RUN <<-EOF
     echo -e '[charm]\nname=Charm\nbaseurl=https://repo.charm.sh/yum/\nenabled=1\ngpgcheck=1\ngpgkey=https://repo.charm.sh/yum/gpg.key' > /etc/yum.repos.d/charm.repo
     rpm-ostree install glow
     ostree container commit
 EOF
 
-# install pet
+# Pet - CLI snippet manager
 RUN curl -s https://api.github.com/repos/knqyf263/pet/releases/latest | jq -r '.assets[] | select(.name | test("linux_amd64.tar.gz")) | .browser_download_url' | xargs -I {} curl -sS -L {} | tar xz -O pet > /tmp/pet && mv /tmp/pet /usr/bin/ && chmod +x /usr/bin/pet
 
-# terraform, packer, vagrant
+# Terraform, Packer, Vagrant
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://rpm.releases.hashicorp.com/fedora/hashicorp.repo -O /etc/yum.repos.d/hashicorp.repo
     mkdir /var/opt
@@ -32,7 +32,7 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# edge
+# Microsoft Edge
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/edge/config.repo -O /etc/yum.repos.d/edge.repo
     mkdir /var/opt
@@ -43,35 +43,35 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# vscode
+# VSCode
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://packages.microsoft.com/yumrepos/vscode/config.repo -O /etc/yum.repos.d/vscode.repo
     rpm-ostree install code
     ostree container commit
 EOF
 
-# swayr
+# Swayr - urgent-first/LRU window switcher for Sway
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/alebastr/swayr/repo/fedora-39/alebastr-swayr-fedora-39.repo -O /etc/yum.repos.d/swayr.repo
     rpm-ostree install swayr
     ostree container commit
 EOF
 
-# nwg-shell
+# Nwg-Shell
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/tofik/nwg-shell/repo/fedora-39/tofik-nwg-shell-fedora-39.repo -O /etc/yum.repos.d/nwg-shell.repo
     rpm-ostree install nwg-shell
     ostree container commit
 EOF
 
-# element
+# Element
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://download.opensuse.org/repositories/home:jejb1:Element/Fedora_39/home:jejb1:Element.repo -O /etc/yum.repos.d/element.repo
     rpm-ostree install element-desktop
     ostree container commit
 EOF
 
-# tailscale
+# Tailscale
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/tailscale.repo -O /etc/yum.repos.d/tailscale.repo
     rpm-ostree install tailscale
@@ -84,7 +84,7 @@ RUN <<-EOF
     rpm-ostree install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin docker-ce-rootless-extras
 EOF
 
-# chrome
+# Google Chrome
 RUN <<-EOF
     sed -i 's/enabled=0/enabled=1/' /etc/yum.repos.d/google-chrome.repo
     rpm --import https://dl.google.com/linux/linux_signing_key.pub
@@ -96,7 +96,7 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# other packages
+# Other
 RUN <<-EOF
     rpm-ostree install \
         android-tools \
@@ -153,8 +153,8 @@ RUN <<-EOF
         sysstat \
         thefuck \
         thunderbird \
-        tmux \
         tldr \
+        tmux \
         usbmuxd \
         virt-manager \
         vlc \
@@ -169,10 +169,11 @@ RUN <<-EOF
     ostree container commit
 EOF
 
+# Apply settings
 COPY post.sh /post.sh
 RUN chmod +x /post.sh && /post.sh && ostree container commit
 
-# Add firefox policies.json to add default addons/settings
+# Add Firefox policies.json
 COPY post/policies.json /etc/firefox/policies/policies.json
 
 SHELL ["/bin/sh", "-c"]

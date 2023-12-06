@@ -2,10 +2,10 @@
 
 set -euxo pipefail
 
-# Enable sysrq
+# Enable SysRq
 echo 'kernel.sysrq = 1' > /usr/lib/sysctl.d/90-sysrq.conf
 
-# Disable selinux
+# Disable SELinux
 sed -i 's/SELINUX=enforcing/SELINUX=permissive/' /etc/selinux/config
 
 # Enable/mask some services by default
