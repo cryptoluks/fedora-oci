@@ -46,7 +46,7 @@ jobs:
       IMAGE: sericea
       IMAGE_TAG: upstream
       IMAGE_UPSTREAM: sericea
-      IMAGE_UPSTREAM_TAG: 38 
+      IMAGE_UPSTREAM_TAG: 39
     runs-on: ubuntu-latest
     steps:
     - name: Clone repository
