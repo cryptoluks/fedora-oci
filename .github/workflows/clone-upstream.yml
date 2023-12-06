@@ -5,9 +5,8 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REGISTRY_UPSTREAM: quay.io
   REPO: ${{ github.repository }}
-  REPO_UPSTREAM: fedora-ostree-desktops
+
   
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -16,10 +15,12 @@ concurrency:
 jobs:
   buildroot:
     env:
-      IMAGE: buildroot
       IMAGE_TAG: upstream
-      IMAGE_UPSTREAM: buildroot
-      IMAGE_UPSTREAM_TAG: latest
+      IMAGE_UPSTREAM_TAG: 39
+      IMAGE_UPSTREAM: fedora
+      IMAGE: buildroot
+      REGISTRY_UPSTREAM: docker.io
+      REPO_UPSTREAM: library
     runs-on: ubuntu-latest
     steps:
     - name: Login to ${{ env.REGISTRY }} as ${{ github.actor }}
@@ -43,10 +44,12 @@ jobs:
         docker push ${{ env.DST }}
   sericea:
     env:
-      IMAGE: sericea
       IMAGE_TAG: upstream
-      IMAGE_UPSTREAM: sericea
       IMAGE_UPSTREAM_TAG: 39
+      IMAGE_UPSTREAM: sericea
+      IMAGE: sericea
+      REGISTRY_UPSTREAM: quay.io
+      REPO_UPSTREAM: fedora-ostree-desktops
     runs-on: ubuntu-latest
     steps:
     - name: Clone repository
