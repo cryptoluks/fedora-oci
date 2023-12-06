@@ -153,6 +153,7 @@ RUN <<-EOF
         wireguard-tools \
         wl-clipboard \
         wlsunset \
+        wofi \
         xarchiver \
         ydotool \
         zoxide \
