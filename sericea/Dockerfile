@@ -64,16 +64,10 @@ RUN <<-EOF
         nwg-bar \
         nwg-displays \
         nwg-look \
-        nwg-shell-config
+        nwg-shell-config \
+        swaync
     ostree container commit
 EOF
-
-# Tailscale
-#RUN <<-EOF
-#    wget --progress=bar:force:noscroll https://pkgs.tailscale.com/stable/fedora/tailscale.repo -O /etc/yum.repos.d/tailscale.repo
-#    rpm-ostree install tailscale
-#    ostree container commit
-#EOF
 
 # Docker
 RUN <<-EOF
@@ -147,6 +141,7 @@ RUN <<-EOF
         smartmontools \
         socat \
         speedcrunch \
+        swappy \
         sysstat \
         thefuck \
         thunderbird \
