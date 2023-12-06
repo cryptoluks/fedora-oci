@@ -57,10 +57,14 @@ RUN <<-EOF
     ostree container commit
 EOF
 
-# Nwg-Shell
+# Nwg tools
 RUN <<-EOF
     wget --progress=bar:force:noscroll https://copr.fedorainfracloud.org/coprs/tofik/nwg-shell/repo/fedora-39/tofik-nwg-shell-fedora-39.repo -O /etc/yum.repos.d/nwg-shell.repo
-    rpm-ostree install nwg-shell
+    rpm-ostree install \
+        nwg-bar \
+        nwg-displays \
+        nwg-look \
+        nwg-shell-config
     ostree container commit
 EOF
 
