@@ -152,6 +152,7 @@ RUN <<-EOF
         vlc \
         wireguard-tools \
         wl-clipboard \
+        wlsunset \
         xarchiver \
         ydotool \
         zoxide \
