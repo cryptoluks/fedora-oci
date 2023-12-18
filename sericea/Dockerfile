@@ -138,6 +138,7 @@ RUN <<-EOF
         qt5ct \
         rclone \
         ripgrep \
+        spacefm \
         smartmontools \
         socat \
         speedcrunch \
