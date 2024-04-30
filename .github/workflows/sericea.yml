@@ -1,0 +1,80 @@
+on:
+  workflow_dispatch:
+  workflow_run:
+    workflows:
+      - .github/workflows/packages.yml
+    types:
+      - completed
+  push:
+    paths:
+      - sericea/**
+
+env:
+  REGISTRY: ghcr.io
+  REPO: ${{ github.repository }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check-kernel:
+    if: github.event.workflow_run.conclusion == 'success' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      rebuild: ${{ steps.kernel-diff.outputs.rebuild }}
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Diff kernel versions to check if buildroot needs to be rebuilded
+        id: kernel-diff
+        run: |
+          cd buildroot
+          if [[ "${{ github.event_name }}" == 'workflow_dispatch' ]] || [[ "${{ github.event_name }}" == 'push' ]] || ! diff kernel-version-upstream.txt kernel-version-latest.txt; then
+            echo "rebuild=yes" | tee -a "$GITHUB_OUTPUT"
+          else
+            echo "rebuild=no" | tee -a "$GITHUB_OUTPUT"
+          fi
+  sericea:
+    needs: check-kernel
+    if: needs.check-kernel.outputs.rebuild == 'yes' || github.event_name == 'workflow_dispatch' || github.event_name == 'push'
+    env:
+      IMAGE: sericea
+      IMAGE_TAG: latest
+      IMAGE_FROM: sericea
+      IMAGE_FROM_TAG: upstream
+      IMAGE_PACKAGES: packages
+      IMAGE_PACKAGES_TAG: latest
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to ${{ env.REGISTRY }} as ${{ github.actor }}
+        uses: docker/login-action@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set SRC, DST and PKGS_SRC env vars
+        run: |
+          echo "SRC=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_FROM }}:${{ env.IMAGE_FROM_TAG }}" >> $GITHUB_ENV
+          echo "DST=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+          echo "PKGS_SRC=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE_PACKAGES }}:${{ env.IMAGE_PACKAGES_TAG }}" >> $GITHUB_ENV
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build from ${{ env.SRC }} and push the image to ${{ env.DST }}
+        uses: docker/build-push-action@v5
+        with:
+          context: sericea
+          push: true
+          tags: ${{ env.DST }}
+          build-args: |
+            SRC=${{ env.SRC }}
+            PKGS_SRC=${{ env.PKGS_SRC }}
+      - name: Get kernel version, commit and push it to the repository
+        run: |
+          docker run --rm ${{ env.DST }} sh -c "rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}'" > ${{ github.workspace }}/buildroot/kernel-version-latest.txt
+          git config user.email "<>"
+          git config user.name "GitHub Action"
+          git add ${{ github.workspace }}/buildroot/kernel-version-latest.txt
+          git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea latest" && git pull --rebase && git push)

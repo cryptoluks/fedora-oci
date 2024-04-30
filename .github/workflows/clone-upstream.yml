@@ -1,0 +1,83 @@
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: "0 1 * * *"
+
+env:
+  REGISTRY: ghcr.io
+  REPO: ${{ github.repository }}
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  buildroot:
+    env:
+      IMAGE_TAG: upstream
+      IMAGE_UPSTREAM_TAG: 39
+      IMAGE_UPSTREAM: fedora
+      IMAGE: buildroot
+      REGISTRY_UPSTREAM: docker.io
+      REPO_UPSTREAM: library
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to ${{ env.REGISTRY }} as ${{ github.actor }}
+        uses: docker/login-action@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set SRC and DST env vars
+        run: |
+          echo "SRC=${{ env.REGISTRY_UPSTREAM }}/${{ env.REPO_UPSTREAM }}/${{ env.IMAGE_UPSTREAM }}:${{ env.IMAGE_UPSTREAM_TAG }}" >> $GITHUB_ENV
+          echo "DST=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+      - name: Pull the image from ${{ env.SRC }}
+        run: |
+          docker pull ${{ env.SRC }}
+      - name: Tag the image as ${{ env.DST }}
+        run: |
+          docker tag ${{ env.SRC }} ${{ env.DST }}
+      - name: Push the image to ${{ env.DST }}
+        run: |
+          docker push ${{ env.DST }}
+  sericea:
+    env:
+      IMAGE_TAG: upstream
+      IMAGE_UPSTREAM_TAG: 39
+      IMAGE_UPSTREAM: sericea
+      IMAGE: sericea
+      REGISTRY_UPSTREAM: quay.io
+      REPO_UPSTREAM: fedora-ostree-desktops
+    runs-on: ubuntu-latest
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+      - name: Set up docker buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Login to github container registry
+        uses: docker/login-action@master
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Set SRC and DST env vars
+        run: |
+          echo "SRC=${{ env.REGISTRY_UPSTREAM }}/${{ env.REPO_UPSTREAM }}/${{ env.IMAGE_UPSTREAM }}:${{ env.IMAGE_UPSTREAM_TAG }}" >> $GITHUB_ENV
+          echo "DST=${{ env.REGISTRY }}/${{ env.REPO }}/${{ env.IMAGE }}:${{ env.IMAGE_TAG }}" >> $GITHUB_ENV
+      - name: Pull the image from ${{ env.SRC }}
+        run: |
+          docker pull ${{ env.SRC }}
+      - name: Tag the image as ${{ env.DST }}
+        run: |
+          docker tag ${{ env.SRC }} ${{ env.DST }}
+      - name: Push the image to ${{ env.DST }}
+        run: |
+          docker push ${{ env.DST }}
+      - name: Get kernel version, commit and push it to the repository
+        run: |
+          docker run --rm ${{ env.DST }} sh -c "rpm -q kernel --queryformat '%{VERSION}-%{RELEASE}.%{ARCH}'" > ${{ github.workspace }}/buildroot/kernel-version-upstream.txt
+          git config user.email "<>"
+          git config user.name "GitHub Action"
+          git add ${{ github.workspace }}/buildroot/kernel-version-upstream.txt
+          git diff-index --quiet HEAD || (git commit -m "Add kernel version sericea upstream" && git pull --rebase && git push)
