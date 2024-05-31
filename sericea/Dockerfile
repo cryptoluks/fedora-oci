@@ -131,6 +131,8 @@ RUN <<-EOF
         NetworkManager-tui \
         nmap \
         openh264 \
+        pass \
+        gopass \
         pipenv \
         poetry \
         proxychains-ng \
