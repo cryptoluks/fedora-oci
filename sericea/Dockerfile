@@ -161,7 +161,8 @@ RUN <<-EOF
         ydotool \
         zoxide \
         zsh \
-        zstd
+        zstd \
+        go-task
     rm -rf /var/*
     ostree container commit
 EOF
